@@ -166,3 +166,55 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #DCFCE7;
   color: var(--color-success);
 }
+
+.badge-warning {
+  background-color: #FEF3C7;
+  color: var(--color-warning);
+}
+
+/* =====================================================================
+ * Responsive Layout & Accessibility Styles (TASK-051 / TEST_PLAN §12)
+ * Breakpoints:
+ * - Mobile: <= 768px (Phone: 375px)
+ * - Tablet: 769px - 1024px
+ * - Desktop: >= 1025px (Desktop: 1440px)
+ * ===================================================================== */
+
+.lesson-workspace-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .lesson-workspace-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .lesson-nav-aside {
+    order: 2; /* Put navigator below lesson content on mobile */
+  }
+
+  /* Prevent horizontal scroll on small devices */
+  body, html {
+    overflow-x: hidden;
+  }
+
+  /* Accessible touch targets on mobile (min 44px) */
+  .btn {
+    min-height: 44px;
+  }
+}
+
+/* Accessible focus visible rings for keyboard navigation */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+

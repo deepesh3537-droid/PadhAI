@@ -87,6 +87,12 @@ Status values: **Accepted** · **Proposed** · **Open** · **Superseded**
 **Decision:** Express API routes forward the verified user JWT down to repository queries using `getSupabaseClient(token)`.
 **Reason:** PostgREST executes queries with the user's JWT under the `authenticated` PostgreSQL role. This satisfies PostgreSQL table permissions and directly evaluates RLS policies (`auth.uid() = user_id`) without requiring privileged `service_role` keys or disabling RLS.
 
+## ADR-018 — SearXNG as Local/Self-Hosted Search Provider
+**Status:** Accepted
+**Decision:** Use SearXNG (locally hosted or configurable instance via `SEARXNG_URL`) as the search provider for educational resource discovery.
+**Reason:** SearXNG is open-source (GPL-3.0), privacy-respecting, has no API key requirements or paid subscription fees (strictly aligns with ₹0 target ADR-006), returns clean JSON output via the `/search?format=json` endpoint, and aggregates multiple search engines (Google, Bing, DuckDuckGo, Wikipedia, arXiv, etc.).
+**Consequence:** The application configures `SEARXNG_URL` in `.env` (defaulting to `http://localhost:8080` or a public fallback instance). The provider gracefully handles timeouts or unreachable instances without failing the entire course generation pipeline.
+
 ---
 
 ## Open decisions (no ADR yet — do not invent answers)
@@ -95,7 +101,6 @@ Status values: **Accepted** · **Proposed** · **Open** · **Superseded**
 |---|---|
 | Final model + license | ADR-004 update + `docs/model-benchmarks.md` |
 | GPU model / VRAM | `docs/model-benchmarks.md` |
-| Search provider | New ADR |
 | Online inference approach under ₹0 | New ADR |
 | Hosting for API + worker | New ADR |
 | Syllabus formats + max file size | New ADR |
@@ -103,3 +108,4 @@ Status values: **Accepted** · **Proposed** · **Open** · **Superseded**
 | Privacy, retention, account deletion | New ADR + `SECURITY.md` |
 | Target number of prototype users | New ADR |
 | Course editing in first release | New ADR |
+

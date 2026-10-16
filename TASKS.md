@@ -77,24 +77,24 @@
 
 ## Phase 4 — Basic resource discovery
 
-- [ ] **TASK-039** Choose search provider after verifying current free terms/quotas/ToS → new ADR.
-- [ ] **TASK-040** Migrations for `resources` and `lesson_resources`.
-- [ ] **TASK-041** `research/providers/<provider>.js` with quota handling.
-- [ ] **TASK-042** URL normalization and deduplication.
-- [ ] **TASK-043** Safe link checker (SSRF protections, timeouts, size caps).
-- [ ] **TASK-044** Basic relevance filter; wrap retrieved text as untrusted.
-- [ ] **TASK-045** Show resources per lesson with source metadata.
-- [ ] **TASK-046** Run TEST_PLAN §5 (non-embed parts).
+- [x] **TASK-039** Choose search provider after verifying current free terms/quotas/ToS → new ADR.
+- [x] **TASK-040** Migrations for `resources` and `lesson_resources`.
+- [x] **TASK-041** `research/providers/<provider>.js` with quota handling.
+- [x] **TASK-042** URL normalization and deduplication.
+- [x] **TASK-043** Safe link checker (SSRF protections, timeouts, size caps).
+- [x] **TASK-044** Basic relevance filter; wrap retrieved text as untrusted.
+- [x] **TASK-045** Show resources per lesson with source metadata.
+- [x] **TASK-046** Run TEST_PLAN §5 (non-embed parts).
 
 ---
 
 ## Phase 5 — Learning interface
 
-- [ ] **TASK-047** `VideoEmbed` with the YouTube IFrame Player API + fallback card.
-- [ ] **TASK-048** Fallback link cards for non-embeddable sites.
-- [ ] **TASK-049** PDF viewing only where permitted; otherwise link out.
-- [ ] **TASK-050** Lesson progress indicators.
-- [ ] **TASK-051** Responsive pass at 375 / 768 / 1440px (TEST_PLAN §12).
+- [x] **TASK-047** `VideoEmbed` with the YouTube IFrame Player API + fallback card.
+- [x] **TASK-048** Fallback link cards for non-embeddable sites.
+- [x] **TASK-049** PDF viewing only where permitted; otherwise link out.
+- [x] **TASK-050** Lesson progress indicators.
+- [x] **TASK-051** Responsive pass at 375 / 768 / 1440px (TEST_PLAN §12).
 
 ---
 
