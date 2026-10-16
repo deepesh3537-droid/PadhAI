@@ -1,0 +1,100 @@
+# DECISIONS — Architecture Decision Records
+
+> Permanent technical decisions. **Do not change these silently.** To change one, add a new ADR that supersedes it.
+> `DECISIONS.md` = permanent decisions · `MEMORY.md` = current project state.
+
+Status values: **Accepted** · **Proposed** · **Open** · **Superseded**
+
+---
+
+## ADR-001 — Use React (Vite) + Node.js/Express instead of a full-stack framework
+**Status:** Accepted
+**Decision:** Separate `client/` (React + Vite) and `server/` (Express).
+**Reason:** The app needs a long-running backend (AI calls, research worker, rate limiting) that must not live inside request/response serverless handlers. A separate Express server keeps AI orchestration, secrets, and workers in one controllable place. (A Next.js-style unified app was considered, as in the guide's example, and rejected for this reason.)
+
+## ADR-002 — JavaScript (ES modules), not TypeScript
+**Status:** Accepted
+**Decision:** Use JavaScript on both client and server.
+**Reason:** Developer choice; lower setup complexity for an incremental-learning project.
+**Consequence:** Compensate with **Zod schemas** for all requests and model output, and JSDoc on exported functions.
+
+## ADR-003 — Supabase for PostgreSQL and Auth
+**Status:** Accepted
+**Decision:** Use Supabase (PostgreSQL + Auth + Row Level Security).
+**Reason:** Managed Postgres and auth without running our own infrastructure; avoids a local DB install on an 8 GB machine; RLS gives database-level isolation.
+**Consequence:** Free-tier limits and inactivity pausing must be verified before relying on it. The service-role key is server-only.
+
+## ADR-004 — Ollama with a small open-weight model for local inference
+**Status:** Accepted (runtime) · **Open** (exact model)
+**Decision:** Use Ollama locally. Qwen3-0.6B is a **benchmark candidate only**.
+**Reason:** Free, local, replaceable, fits limited hardware.
+**Consequence:** Exact model, license, and hardware fit must be recorded in `docs/model-benchmarks.md` before adoption.
+
+## ADR-005 — Replaceable model adapter
+**Status:** Accepted
+**Decision:** All model calls go through `server/src/ai/modelAdapter.js`; Ollama is one implementation.
+**Reason:** The runtime/model will likely change (hosted free inference, larger model).
+
+## ADR-006 — Zero-cost target; no silent paid fallbacks
+**Status:** Accepted
+**Decision:** ₹0 target for development and the initial prototype. No paid service without explicit approval.
+**Reason:** Hard project constraint. ₹0 is a prototype target, not a guarantee for unlimited public use.
+
+## ADR-007 — Plain functions first; LangChain.js / LangGraph.js only when justified
+**Status:** Accepted
+**Decision:** Start with ordinary functions and an explicit pipeline. Introduce LangChain.js or LangGraph.js only when they solve a concrete problem (e.g., checkpointed, branching research jobs).
+**Reason:** Avoid premature complexity; keep the learner able to understand each step.
+
+## ADR-008 — Database is the source of truth for learner progress
+**Status:** Accepted
+**Decision:** Progress, quiz history, and mastery live in PostgreSQL, never only in model conversation memory.
+**Reason:** Model context is temporary and incomplete.
+
+## ADR-009 — Completion and mastery are tracked separately
+**Status:** Accepted
+**Decision:** `lesson_progress` (completion) and `topic_mastery` (estimated understanding) are separate tables/concepts. A single wrong answer never defines a weakness.
+
+## ADR-010 — Deterministic code for scoring, ownership, validation
+**Status:** Accepted
+**Decision:** Quiz scoring, authorization checks, CRUD, validation, and rate limiting are plain code, not LLM calls.
+
+## ADR-011 — AI tutor is course-first with flagged fallback
+**Status:** Accepted
+**Decision:** The tutor prefers course sources and cites them. Answers beyond course material are explicitly labeled.
+
+## ADR-012 — SQL-based retrieval; no vector database initially
+**Status:** Accepted
+**Decision:** Tutor and profile retrieval use SQL queries. Add vector search only after a demonstrated need.
+
+## ADR-013 — Research runs as persisted, bounded jobs
+**Status:** Accepted
+**Decision:** Research is never done inside one HTTP request. Jobs are persisted (`queued → researching → validating → generating_course → completed/failed`), bounded by limits in `config/limits.js`, and polled by the client.
+
+## ADR-014 — Retrieved web content is untrusted
+**Status:** Accepted
+**Decision:** Retrieved pages are treated as data, never instructions; they cannot trigger actions or override system rules.
+
+## ADR-015 — Respect third-party content terms
+**Status:** Accepted
+**Decision:** Official YouTube IFrame Player API only; fallback links when embedding is blocked; no rehosting or bypassing restrictions.
+
+## ADR-016 — Responsive web app, not native apps
+**Status:** Accepted (working assumption)
+**Decision:** A responsive web app is sufficient for the prototype.
+
+---
+
+## Open decisions (no ADR yet — do not invent answers)
+
+| Topic | Where to record when resolved |
+|---|---|
+| Final model + license | ADR-004 update + `docs/model-benchmarks.md` |
+| GPU model / VRAM | `docs/model-benchmarks.md` |
+| Search provider | New ADR |
+| Online inference approach under ₹0 | New ADR |
+| Hosting for API + worker | New ADR |
+| Syllabus formats + max file size | New ADR |
+| Source-quality measurement | New ADR |
+| Privacy, retention, account deletion | New ADR + `SECURITY.md` |
+| Target number of prototype users | New ADR |
+| Course editing in first release | New ADR |
