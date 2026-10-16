@@ -38,6 +38,10 @@ const envSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(60000),
   RATE_LIMIT_MAX_REQUESTS: z.coerce.number().default(60),
   RATE_LIMIT_AI_MAX_REQUESTS: z.coerce.number().default(5),
+
+  // Search Provider (SearXNG - ADR-018)
+  SEARXNG_URL: z.string().url().default("http://localhost:8080"),
+  RESEARCH_SEARCH_TIMEOUT_MS: z.coerce.number().default(8000),
 });
 
 const parsed = envSchema.safeParse(process.env);

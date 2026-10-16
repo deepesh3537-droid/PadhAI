@@ -1,9 +1,14 @@
 import { env } from "./config/env.js";
 import { app } from "./app.js";
 
-const server = app.listen(env.PORT, () => {
+import { reclaimAbandonedResearchJobs } from "./db/repositories/researchJob.repository.js";
+
+const server = app.listen(env.PORT, async () => {
   console.log(`🚀 Server running on http://localhost:${env.PORT} in ${env.NODE_ENV} mode`);
   console.log(`📡 Health check available at http://localhost:${env.PORT}/api/health`);
+
+  // Recover any jobs left in 'researching' state prior to this restart
+  await reclaimAbandonedResearchJobs().catch(() => null);
 });
 
 // Graceful shutdown

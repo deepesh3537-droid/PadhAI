@@ -46,6 +46,32 @@ export async function generateAndSaveCourse({ userId, topic, goal, depth, token 
     token
   });
 
+  // 4. Trigger asynchronous resource discovery in background (non-blocking per ADR-013)
+  try {
+    const { createOrGetActiveResearchJob } = await import("../db/repositories/researchJob.repository.js");
+    const { processResearchJob } = await import("../research/worker.js");
+
+    createOrGetActiveResearchJob({
+      userId,
+      courseId: savedCourse.id,
+      token
+    }).then(({ job }) => {
+      if (job) {
+        // Fire non-blocking worker execution
+        processResearchJob({
+          jobId: job.id,
+          courseId: savedCourse.id,
+          userId,
+          token
+        }).catch((err) => console.warn(`[CourseService] Background research failed for ${savedCourse.id}:`, err.message));
+      }
+    }).catch((err) => {
+      console.warn("[CourseService] Failed to queue research job:", err.message);
+    });
+  } catch (err) {
+    console.warn("[CourseService] Research job queuing skipped:", err.message);
+  }
+
   return savedCourse;
 }
 
