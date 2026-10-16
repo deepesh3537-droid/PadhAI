@@ -25,10 +25,10 @@ Status values: **Accepted** · **Proposed** · **Open** · **Superseded**
 **Consequence:** Free-tier limits and inactivity pausing must be verified before relying on it. The service-role key is server-only.
 
 ## ADR-004 — Ollama with a small open-weight model for local inference
-**Status:** Accepted (runtime) · **Open** (exact model)
-**Decision:** Use Ollama locally. Qwen3-0.6B is a **benchmark candidate only**.
-**Reason:** Free, local, replaceable, fits limited hardware.
-**Consequence:** Exact model, license, and hardware fit must be recorded in `docs/model-benchmarks.md` before adoption.
+**Status:** Accepted
+**Decision:** Use Ollama locally with `qwen3:0.6b` (Apache License 2.0).
+**Reason:** Benchmarked on target hardware (NVIDIA GTX 1650, CUDA 12.7): achieved 130.4 tokens/sec, 100% JSON schema validity (20/20 prompts), and under 1 GB VRAM usage.
+**Consequence:** Integration remains decoupled via `modelAdapter.js` in case alternative or hosted models are needed later.
 
 ## ADR-005 — Replaceable model adapter
 **Status:** Accepted

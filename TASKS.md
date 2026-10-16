@@ -12,14 +12,14 @@
 ## Phase 0 — Prerequisites and benchmarking
 
 - [x] **TASK-001** Install Node.js LTS and Git; confirm versions.
-- [ ] **TASK-002** Record hardware (RAM, GPU model, VRAM, OS) in `docs/model-benchmarks.md`.
-- [ ] **TASK-003** Install Ollama; verify it runs and whether it uses the GPU.
-- [ ] **TASK-004** Pull the candidate model (verify the exact tag on the Ollama library).
-- [ ] **TASK-005** Check the model card: exact version, license, commercial-use terms; record them.
-- [ ] **TASK-006** Benchmark ~20 outline prompts: tokens/sec, RAM/VRAM, JSON validity rate, quality (TEST_PLAN §13).
-- [ ] **TASK-007** Decide model (keep, or try a larger quantized one); update ADR-004.
-- [ ] **TASK-008** Create the free Supabase project; confirm no credit card needed; note free-tier limits and pause behavior.
-- [ ] **TASK-009** Open the project in Google Antigravity.
+- [x] **TASK-002** Record hardware (RAM, GPU model, VRAM, OS) in `docs/model-benchmarks.md`.
+- [x] **TASK-003** Install Ollama; verify it runs and whether it uses the GPU.
+- [x] **TASK-004** Pull the candidate model (verify the exact tag on the Ollama library).
+- [x] **TASK-005** Check the model card: exact version, license, commercial-use terms; record them.
+- [x] **TASK-006** Benchmark ~20 outline prompts: tokens/sec, RAM/VRAM, JSON validity rate, quality (TEST_PLAN §13).
+- [x] **TASK-007** Decide model (keep, or try a larger quantized one); update ADR-004.
+- [x] **TASK-008** Create the free Supabase project; confirm no credit card needed; note free-tier limits and pause behavior.
+- [x] **TASK-009** Open the project in Google Antigravity.
 
 **Exit check:** `docs/model-benchmarks.md` complete; model chosen provisionally; Supabase project exists.
 
@@ -29,15 +29,15 @@
 
 - [x] **TASK-010** `git init`; add `.gitignore` (node_modules, .env, dist).
 - [x] **TASK-011** Create folder skeleton per `ARCHITECTURE.md` §3.
-- [ ] **TASK-012** Scaffold `client/` with React + Vite (JavaScript); run the dev server.
-- [ ] **TASK-013** Scaffold `server/` (`"type": "module"`); install `express cors helmet dotenv zod express-rate-limit @supabase/supabase-js`.
-- [ ] **TASK-014** `server/src/config/env.js`: validate env vars with Zod; fail fast.
-- [ ] **TASK-015** `GET /api/health`; add error handler middleware.
-- [ ] **TASK-016** Create real `.env` files from `.env.example`; verify they are git-ignored.
-- [ ] **TASK-017** Migration `001_profiles.sql` (profile on sign-up + RLS); apply in Supabase.
-- [ ] **TASK-018** Client: Supabase client, `AuthContext`, sign-up/login pages, protected routes.
-- [ ] **TASK-019** Server: `auth.js` JWT-verification middleware.
-- [ ] **TASK-020** Protected `GET /api/me` and a basic Dashboard that calls it.
+- [x] **TASK-012** Scaffold `client/` with React + Vite (JavaScript); run the dev server.
+- [x] **TASK-013** Scaffold `server/` (`"type": "module"`); install `express cors helmet dotenv zod express-rate-limit @supabase/supabase-js`.
+- [x] **TASK-014** `server/src/config/env.js`: validate env vars with Zod; fail fast.
+- [x] **TASK-015** `GET /api/health`; add error handler middleware.
+- [x] **TASK-016** Create real `.env` files from `.env.example`; verify they are git-ignored.
+- [x] **TASK-017** Migration `001_profiles.sql` (profile on sign-up + RLS); apply in Supabase.
+- [x] **TASK-018** Client: Supabase client, `AuthContext`, sign-up/login pages, protected routes.
+- [x] **TASK-019** Server: `auth.js` JWT-verification middleware.
+- [x] **TASK-020** Protected `GET /api/me` and a basic Dashboard that calls it.
 - [ ] **TASK-021** Two-account isolation check (TEST_PLAN §1, §3).
 
 **Exit check:** Auth works end-to-end; 401 without token; accounts isolated.
