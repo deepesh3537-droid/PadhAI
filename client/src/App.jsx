@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import { LoginPage } from "./routes/LoginPage.jsx";
 import { DashboardPage } from "./routes/DashboardPage.jsx";
+import { NewCoursePage } from "./routes/NewCoursePage.jsx";
+import { CoursePage } from "./routes/CoursePage.jsx";
+import { LessonPage } from "./routes/LessonPage.jsx";
 import "./styles/index.css";
 
 function AppContent() {
   const { user, loading } = useAuth();
+  const [currentView, setCurrentView] = useState("dashboard"); // "dashboard" | "new-course" | "course" | "lesson"
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedLessonId, setSelectedLessonId] = useState(null);
 
   if (loading) {
     return (
@@ -17,7 +24,64 @@ function AppContent() {
     );
   }
 
-  return user ? <DashboardPage /> : <LoginPage />;
+  if (!user) {
+    return <LoginPage />;
+  }
+
+  if (currentView === "new-course") {
+    return (
+      <NewCoursePage
+        onCourseCreated={(newCourse) => {
+          setSelectedCourse(newCourse);
+          setSelectedCourseId(newCourse.id);
+          setCurrentView("course");
+        }}
+        onCancel={() => setCurrentView("dashboard")}
+      />
+    );
+  }
+
+  if (currentView === "lesson" && selectedCourse) {
+    return (
+      <LessonPage
+        course={selectedCourse}
+        initialLessonId={selectedLessonId}
+        onBackToCourse={() => setCurrentView("course")}
+        onSelectLesson={(lesson) => setSelectedLessonId(lesson.id)}
+      />
+    );
+  }
+
+  if (currentView === "course") {
+    return (
+      <CoursePage
+        courseId={selectedCourseId}
+        initialCourse={selectedCourse}
+        onBack={() => {
+          setSelectedCourse(null);
+          setSelectedCourseId(null);
+          setSelectedLessonId(null);
+          setCurrentView("dashboard");
+        }}
+        onSelectLesson={({ lesson, course: c }) => {
+          if (c) setSelectedCourse(c);
+          setSelectedLessonId(lesson.id);
+          setCurrentView("lesson");
+        }}
+      />
+    );
+  }
+
+  return (
+    <DashboardPage
+      onNavigateToNew={() => setCurrentView("new-course")}
+      onSelectCourse={(course) => {
+        setSelectedCourse(course);
+        setSelectedCourseId(course.id);
+        setCurrentView("course");
+      }}
+    />
+  );
 }
 
 export function App() {

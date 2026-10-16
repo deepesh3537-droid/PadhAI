@@ -48,18 +48,18 @@
 
 > Topic input → local model → schema-validated outline → PostgreSQL → React display.
 
-- [ ] **TASK-022** Migration `002_courses_modules_lessons.sql` with FKs, indexes, RLS.
-- [ ] **TASK-023** `ai/schemas/outline.schema.js` (Zod).
-- [ ] **TASK-024** `ai/prompts/outline.prompt.js` (topic, goal, depth).
-- [ ] **TASK-025** `config/limits.js` (max tokens, retries, timeouts).
-- [ ] **TASK-026** `ai/modelAdapter.js` + `ollamaAdapter.js` with parse → validate → bounded repair retry.
-- [ ] **TASK-027** Unit tests for the adapter with malformed/partial/invalid output (mocked).
-- [ ] **TASK-028** Repository + service: atomic save of course/modules/lessons.
-- [ ] **TASK-029** `POST /api/courses` (auth, Zod validation, rate limit).
-- [ ] **TASK-030** `GET /api/courses` and `GET /api/courses/:id` (owner-only).
-- [ ] **TASK-031** Client `NewCoursePage` with loading/error states.
-- [ ] **TASK-032** Client `CoursePage` showing the saved outline; dashboard lists courses.
-- [ ] **TASK-033** Run all TEST_PLAN §2 checks, plus cross-user access (§3).
+- [x] **TASK-022** Migration `002_courses_modules_lessons.sql` with FKs, indexes, RLS.
+- [x] **TASK-023** `ai/schemas/outline.schema.js` (Zod).
+- [x] **TASK-024** `ai/prompts/outline.prompt.js` (topic, goal, depth).
+- [x] **TASK-025** `config/limits.js` (max tokens, retries, timeouts).
+- [x] **TASK-026** `ai/modelAdapter.js` + `ollamaAdapter.js` with parse → validate → bounded repair retry.
+- [x] **TASK-027** Unit tests for the adapter with malformed/partial/invalid output (mocked).
+- [x] **TASK-028** Repository + service: atomic save of course/modules/lessons.
+- [x] **TASK-029** `POST /api/courses` (auth, Zod validation, rate limit).
+- [x] **TASK-030** `GET /api/courses` and `GET /api/courses/:id` (owner-only).
+- [x] **TASK-031** Client `NewCoursePage` with loading/error states.
+- [x] **TASK-032** Client `CoursePage` showing the saved outline; dashboard lists courses.
+- [x] **TASK-033** Run all TEST_PLAN §2 checks, plus cross-user access (§3).
 
 **Exit check (Milestone 1):** A learner enters a goal, gets a valid outline from the local model, and retrieves it later. All failure tests pass.
 
@@ -67,11 +67,11 @@
 
 ## Phase 3 — Structured courses
 
-- [ ] **TASK-034** Collapsible module/lesson hierarchy UI.
-- [ ] **TASK-035** `LessonPage` with prev/next navigation.
-- [ ] **TASK-036** Migration for `lesson_progress`; `POST /api/lessons/:id/complete` (idempotent).
-- [ ] **TASK-037** Course progress bar.
-- [ ] **TASK-038** Run TEST_PLAN §4.
+- [x] **TASK-034** Collapsible module/lesson hierarchy UI.
+- [x] **TASK-035** `LessonPage` with prev/next navigation.
+- [x] **TASK-036** Migration for `lesson_progress`; `POST /api/lessons/:id/complete` (idempotent).
+- [x] **TASK-037** Course progress bar.
+- [x] **TASK-038** Run TEST_PLAN §4.
 
 ---
 

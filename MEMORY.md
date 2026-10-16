@@ -45,10 +45,27 @@ Prerequisites verified (Node.js v24.13.1, npm 11.8.0, Git 2.56.0). Root structur
 - [x] **TASK-018**: Client auth layer (`supabaseClient.js`, `apiClient.js`, `AuthContext.jsx`, `LoginPage.jsx`, `DashboardPage.jsx`).
 - [x] **TASK-019**: Server JWT verification middleware (`auth.js` verified with unit tests).
 - [x] **TASK-020**: Protected `GET /api/me` implemented and verified end-to-end.
+- [x] **TASK-022**: Migration `002_courses_modules_lessons.sql` with foreign keys, indexes, and RLS.
+- [x] **TASK-023**: `outline.schema.js` curriculum schema with Zod.
+- [x] **TASK-024**: `outline.prompt.js` with structured generation and repair prompt builder.
+- [x] **TASK-025**: `config/limits.js` centralized budgets, timeouts, and limits.
+- [x] **TASK-026**: `modelAdapter.js` + `ollamaAdapter.js` with markdown fence stripping and bounded repair retries.
+- [x] **TASK-027**: Unit tests for modelAdapter covering first-attempt parse, code fences, repair retries, and invalid output.
+- [x] **TASK-028**: `course.repository.js` + `course.service.js` for atomic multi-table persistence and retrieval.
+- [x] **TASK-029**: `POST /api/courses` with JWT authentication, Zod validation, and rate limiting.
+- [x] **TASK-030**: `GET /api/courses` and `GET /api/courses/:id` owner-scoped endpoints.
+- [x] **TASK-031**: `NewCoursePage.jsx` with input bounds, loading state, and error banner.
+- [x] **TASK-032**: `DashboardPage.jsx` with dynamic course loading, empty/loading/error states, course cards, and `App.jsx` client routing to `CoursePage.jsx`.
+- [x] **TASK-033**: Automated Milestone 1 verification suite (20 tests covering schema validation, malformed output recovery, service input bounds, 401 auth guards, Ollama connection/service error handling, and client secret bundle checks).
+- [x] **TASK-034**: Collapsible module/lesson hierarchy UI with Expand/Collapse All and lesson counts in `CoursePage.jsx`.
+- [x] **TASK-035**: `LessonPage.jsx` workspace with boundary-aware previous/next navigation and completed state indicators.
+- [x] **TASK-036**: Migration `003_lesson_progress.sql` and idempotent `POST /api/lessons/:id/complete` endpoint.
+- [x] **TASK-037**: Course progress bar (`ProgressBar.jsx`) integrated in course overview and `GET /api/courses/:id/progress` endpoint.
+- [x] **TASK-038**: Unit and route tests for progress calculation and authentication guards (25 passing tests).
 
 ## Current Task
 
-**TASK-021** — Two-account isolation check & Phase 1 Exit Verification (TEST_PLAN §1, §3).
+**TASK-039** — Phase 4: Basic resource discovery (Choose free search provider with verified terms/quotas).
 
 ## Environment Facts
 
@@ -89,3 +106,4 @@ See the open-decisions table in `DECISIONS.md`.
 |---|---|
 | 2026-10-16 | Created all planning documents. Chose JavaScript, Supabase, course-first tutor. |
 | 2026-10-16 | Completed TASK-001 (Node v24.13.1, Git 2.56.0 verified). Completed TASK-010 (.gitignore) and TASK-011 (folder skeleton per ARCHITECTURE.md §3). |
+| 2026-10-17 | Resolved 'permission denied for table courses' via Option B (ADR-017): implemented user-scoped Supabase client forwarding JWTs to PostgREST to execute queries under `authenticated` role and evaluate RLS. |

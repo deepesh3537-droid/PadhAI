@@ -26,6 +26,7 @@ export async function requireAuth(req, res, next) {
     }
 
     req.user = user;
+    req.token = token;
     next();
   } catch (err) {
     return next(new UnauthorizedError("Failed to authenticate token"));

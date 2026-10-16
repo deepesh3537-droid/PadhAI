@@ -82,6 +82,11 @@ Status values: **Accepted** · **Proposed** · **Open** · **Superseded**
 **Status:** Accepted (working assumption)
 **Decision:** A responsive web app is sufficient for the prototype.
 
+## ADR-017 — User-Scoped Queries Forwarding JWT for Row Level Security (RLS)
+**Status:** Accepted
+**Decision:** Express API routes forward the verified user JWT down to repository queries using `getSupabaseClient(token)`.
+**Reason:** PostgREST executes queries with the user's JWT under the `authenticated` PostgreSQL role. This satisfies PostgreSQL table permissions and directly evaluates RLS policies (`auth.uid() = user_id`) without requiring privileged `service_role` keys or disabling RLS.
+
 ---
 
 ## Open decisions (no ADR yet — do not invent answers)
