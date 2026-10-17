@@ -112,14 +112,14 @@
 
 ## Phase 7 — Learner profile, mastery, tutor
 
-- [ ] **TASK-059** Migration for `topic_mastery`.
-- [ ] **TASK-060** `mastery.service.js` (documented formula) with unit tests.
-- [ ] **TASK-061** Mastery UI with evidence count and uncertainty wording.
-- [ ] **TASK-062** Revision recommendations from evidence.
-- [ ] **TASK-063** SQL retrieval of lesson, outline, attempts, mastery for the tutor.
-- [ ] **TASK-064** `POST /api/tutor/messages` (course-first, labeled fallback, sources).
-- [ ] **TASK-065** Tutor panel UI.
-- [ ] **TASK-066** Run TEST_PLAN §7–8.
+- [x] **TASK-059** Migration for `topic_mastery`.
+- [x] **TASK-060** `mastery.service.js` (documented formula) with unit tests.
+- [x] **TASK-061** Mastery UI with evidence count and uncertainty wording.
+- [x] **TASK-062** Revision recommendations from evidence.
+- [x] **TASK-063** SQL retrieval of lesson, outline, attempts, mastery for the tutor.
+- [x] **TASK-064** `POST /api/tutor/messages` (course-first, labeled fallback, sources).
+- [x] **TASK-065** Tutor panel UI.
+- [x] **TASK-066** Run TEST_PLAN §7–8.
 
 ---
 

@@ -182,7 +182,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .lesson-workspace-layout {
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: 1fr 360px;
   gap: 24px;
   align-items: start;
 }

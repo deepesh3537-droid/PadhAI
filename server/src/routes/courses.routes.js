@@ -152,6 +152,43 @@ coursesRouter.get("/courses/:id/progress", requireAuth, async (req, res, next) =
   }
 });
 
+/**
+ * GET /api/courses/:id/mastery
+ * Retrieve topic mastery breakdown with evidence counts and uncertainty wording (owner-only).
+ * (PRD §6 F6, TASK-061).
+ */
+coursesRouter.get("/courses/:id/mastery", requireAuth, async (req, res, next) => {
+  try {
+    // 1. Verify course ownership
+    await getCourseDetails(req.params.id, req.user.id, req.token);
+
+    const { getCourseMasteryBreakdown } = await import("../services/mastery.service.js");
+    const mastery = await getCourseMasteryBreakdown(req.user.id, req.params.id, req.token);
+    res.json({ mastery });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * GET /api/courses/:id/revisions
+ * Retrieve explainable revision recommendations for topics needing practice or spaced refresh (owner-only).
+ * (PRD §6 F7, TASK-062).
+ */
+coursesRouter.get("/courses/:id/revisions", requireAuth, async (req, res, next) => {
+  try {
+    // 1. Verify course ownership
+    await getCourseDetails(req.params.id, req.user.id, req.token);
+
+    const { getRevisionRecommendations } = await import("../services/mastery.service.js");
+    const recommendations = await getRevisionRecommendations(req.user.id, req.params.id, req.token);
+    res.json({ recommendations });
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default coursesRouter;
+
 
 

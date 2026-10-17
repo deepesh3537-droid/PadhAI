@@ -3,6 +3,7 @@ import { api } from "../lib/apiClient.js";
 import { VideoEmbed, extractYouTubeId } from "../components/ui/VideoEmbed.jsx";
 import { FallbackLinkCard } from "../components/ui/FallbackLinkCard.jsx";
 import { QuizRunner } from "../components/quiz/QuizRunner.jsx";
+import { TutorPanel } from "../components/tutor/TutorPanel.jsx";
 
 export function LessonPage({ course, initialLessonId, onBackToCourse, onSelectLesson }) {
   // Flatten all lessons across modules to calculate order and prev/next
@@ -28,6 +29,7 @@ export function LessonPage({ course, initialLessonId, onBackToCourse, onSelectLe
   const [currentLessonId, setCurrentLessonId] = useState(
     initialLessonId || flattenedLessons[0]?.id || null
   );
+  const [sidebarTab, setSidebarTab] = useState("tutor"); // "tutor" | "nav"
   const [completedLessonIds, setCompletedLessonIds] = useState(new Set());
   const [markingComplete, setMarkingComplete] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
@@ -399,44 +401,97 @@ export function LessonPage({ course, initialLessonId, onBackToCourse, onSelectLe
           </div>
         </main>
 
-        {/* Side Lesson Navigator (TASK-050 / TASK-051) */}
-        <aside className="card lesson-nav-aside" style={{ padding: "16px" }}>
-          <h3 style={{ fontSize: "15px", marginBottom: "12px", borderBottom: "1px solid var(--color-border)", paddingBottom: "8px" }}>
-            Lessons in this Course
-          </h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            {flattenedLessons.map((les, idx) => {
-              const active = les.id === currentLesson.id;
-              const done = completedLessonIds.has(les.id);
-
-              return (
-                <button
-                  key={les.id || idx}
-                  className="btn btn-ghost"
-                  style={{
-                    justifyContent: "space-between",
-                    textAlign: "left",
-                    padding: "8px 10px",
-                    borderRadius: "6px",
-                    backgroundColor: active ? "var(--color-primary-light)" : "transparent",
-                    color: active ? "var(--color-primary-strong)" : "var(--color-text)",
-                    fontWeight: active ? 600 : 400,
-                    fontSize: "13px"
-                  }}
-                  onClick={() => handleNavigateLesson(les)}
-                >
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {idx + 1}. {les.title}
-                  </span>
-                  {done && (
-                    <span style={{ color: "var(--color-success)", fontSize: "12px", marginLeft: "6px" }}>
-                      ✓
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+        {/* Side Workspace: AI Tutor and Lesson Navigator (TASK-050 / TASK-065) */}
+        <aside className="lesson-nav-aside" style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+          {/* Sidebar Tab Switcher */}
+          <div
+            style={{
+              display: "flex",
+              backgroundColor: "#F1F5F9",
+              borderRadius: "8px",
+              padding: "4px",
+              border: "1px solid var(--color-border)"
+            }}
+          >
+            <button
+              className="btn btn-ghost"
+              style={{
+                flex: 1,
+                fontSize: "13px",
+                padding: "6px 12px",
+                borderRadius: "6px",
+                backgroundColor: sidebarTab === "tutor" ? "#FFFFFF" : "transparent",
+                color: sidebarTab === "tutor" ? "var(--color-primary-strong)" : "var(--color-muted)",
+                boxShadow: sidebarTab === "tutor" ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                fontWeight: sidebarTab === "tutor" ? 600 : 400
+              }}
+              onClick={() => setSidebarTab("tutor")}
+            >
+              🤖 AI Tutor
+            </button>
+            <button
+              className="btn btn-ghost"
+              style={{
+                flex: 1,
+                fontSize: "13px",
+                padding: "6px 12px",
+                borderRadius: "6px",
+                backgroundColor: sidebarTab === "nav" ? "#FFFFFF" : "transparent",
+                color: sidebarTab === "nav" ? "var(--color-primary-strong)" : "var(--color-muted)",
+                boxShadow: sidebarTab === "nav" ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                fontWeight: sidebarTab === "nav" ? 600 : 400
+              }}
+              onClick={() => setSidebarTab("nav")}
+            >
+              📑 Lessons ({flattenedLessons.length})
+            </button>
           </div>
+
+          {sidebarTab === "tutor" ? (
+            <TutorPanel
+              lessonId={currentLesson.id}
+              lessonTitle={currentLesson.title}
+            />
+          ) : (
+            <div className="card" style={{ padding: "16px" }}>
+              <h3 style={{ fontSize: "15px", marginBottom: "12px", borderBottom: "1px solid var(--color-border)", paddingBottom: "8px" }}>
+                Lessons in this Course
+              </h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                {flattenedLessons.map((les, idx) => {
+                  const active = les.id === currentLesson.id;
+                  const done = completedLessonIds.has(les.id);
+
+                  return (
+                    <button
+                      key={les.id || idx}
+                      className="btn btn-ghost"
+                      style={{
+                        justifyContent: "space-between",
+                        textAlign: "left",
+                        padding: "8px 10px",
+                        borderRadius: "6px",
+                        backgroundColor: active ? "var(--color-primary-light)" : "transparent",
+                        color: active ? "var(--color-primary-strong)" : "var(--color-text)",
+                        fontWeight: active ? 600 : 400,
+                        fontSize: "13px"
+                      }}
+                      onClick={() => handleNavigateLesson(les)}
+                    >
+                      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {idx + 1}. {les.title}
+                      </span>
+                      {done && (
+                        <span style={{ color: "var(--color-success)", fontSize: "12px", marginLeft: "6px" }}>
+                          ✓
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </aside>
       </div>
     </div>

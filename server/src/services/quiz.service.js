@@ -188,6 +188,24 @@ export async function submitQuizAttempt({ quizId, userId, answers, token }) {
     token
   });
 
+  // Automatically update learner's topic mastery (PRD §6 F6, TASK-060)
+  try {
+    const lesson = await quizRepository.findLessonWithContext(quiz.lesson_id, token);
+    const courseId = lesson?.modules?.courses?.id;
+    if (courseId) {
+      const { recordMasteryFromQuizAttempt } = await import("./mastery.service.js");
+      recordMasteryFromQuizAttempt({
+        userId,
+        courseId,
+        lessonTitle: lesson.title,
+        questionResults: feedback.questionResults,
+        token
+      }).catch((e) => console.warn("[QuizService] Mastery update warning:", e.message));
+    }
+  } catch (err) {
+    console.warn("[QuizService] Could not process mastery update:", err.message);
+  }
+
   return attempt;
 }
 

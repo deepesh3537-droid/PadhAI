@@ -6,6 +6,7 @@ import { healthRouter } from "./routes/health.routes.js";
 import { coursesRouter } from "./routes/courses.routes.js";
 import { lessonsRouter } from "./routes/lessons.routes.js";
 import { quizzesRouter } from "./routes/quizzes.routes.js";
+import { tutorRouter } from "./routes/tutor.routes.js";
 import { requireAuth } from "./middleware/auth.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { NotFoundError } from "./utils/errors.js";
@@ -33,6 +34,9 @@ app.use("/api", lessonsRouter);
 
 // Quizzes API Routes (TASK-055)
 app.use("/api", quizzesRouter);
+
+// AI Tutor API Routes (TASK-064)
+app.use("/api", tutorRouter);
 
 // Protected User Route (TASK-020)
 app.get("/api/me", requireAuth, (req, res) => {

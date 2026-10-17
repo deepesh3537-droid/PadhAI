@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../lib/apiClient.js";
 import { ProgressBar } from "../components/ui/ProgressBar.jsx";
+import { MasteryCard } from "../components/mastery/MasteryCard.jsx";
 
 export function CoursePage({ courseId, initialCourse, onBack, onSelectLesson }) {
   const targetCourseId = courseId || initialCourse?.id;
@@ -10,6 +11,7 @@ export function CoursePage({ courseId, initialCourse, onBack, onSelectLesson }) 
   const [loading, setLoading] = useState(!initialHasCurriculum && Boolean(targetCourseId));
   const [errorMsg, setErrorMsg] = useState("");
   const [progress, setProgress] = useState(null);
+  const [activeTab, setActiveTab] = useState("curriculum"); // "curriculum" | "mastery"
   // Default: all modules open or first module open
   const [expandedModules, setExpandedModules] = useState({ 0: true });
 
@@ -157,8 +159,58 @@ export function CoursePage({ courseId, initialCourse, onBack, onSelectLesson }) 
         )}
       </div>
 
-      {/* Modules and Lessons Hierarchy */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      {/* Navigation Tabs (TASK-061) */}
+      <div style={{ display: "flex", gap: "8px", borderBottom: "1px solid var(--color-border)", marginBottom: "24px" }}>
+        <button
+          className="btn btn-ghost"
+          style={{
+            borderRadius: "0",
+            borderBottom: activeTab === "curriculum" ? "2px solid var(--color-primary-strong)" : "2px solid transparent",
+            color: activeTab === "curriculum" ? "var(--color-primary-strong)" : "var(--color-muted)",
+            fontWeight: activeTab === "curriculum" ? 600 : 400,
+            padding: "10px 16px"
+          }}
+          onClick={() => setActiveTab("curriculum")}
+        >
+          📚 Curriculum Outline
+        </button>
+        <button
+          className="btn btn-ghost"
+          style={{
+            borderRadius: "0",
+            borderBottom: activeTab === "mastery" ? "2px solid var(--color-primary-strong)" : "2px solid transparent",
+            color: activeTab === "mastery" ? "var(--color-primary-strong)" : "var(--color-muted)",
+            fontWeight: activeTab === "mastery" ? 600 : 400,
+            padding: "10px 16px"
+          }}
+          onClick={() => setActiveTab("mastery")}
+        >
+          🎯 Topic Mastery & Revisions
+        </button>
+      </div>
+
+      {activeTab === "mastery" ? (
+        <MasteryCard
+          courseId={course.id}
+          onNavigateToLesson={(topicName) => {
+            if (course.modules) {
+              for (const mod of course.modules) {
+                const match = (mod.lessons || []).find(
+                  (l) => l.title?.toLowerCase().includes(topicName.toLowerCase()) || topicName.toLowerCase().includes(l.title?.toLowerCase())
+                );
+                if (match) {
+                  onSelectLesson?.(match.id);
+                  return;
+                }
+              }
+              const first = course.modules[0]?.lessons?.[0];
+              if (first) onSelectLesson?.(first.id);
+            }
+          }}
+        />
+      ) : (
+        /* Modules and Lessons Hierarchy */
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h2 style={{ fontSize: "20px" }}>Curriculum Outline</h2>
           <button
@@ -280,6 +332,7 @@ export function CoursePage({ courseId, initialCourse, onBack, onSelectLesson }) 
           );
         }))}
       </div>
+      )}
     </div>
   );
 }

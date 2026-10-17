@@ -33,7 +33,25 @@ export const aiRateLimiter = rateLimit({
   }
 });
 
+/**
+ * Rate limiter for interactive AI tutor questions (TEST_PLAN §8).
+ */
+export const tutorRateLimiter = rateLimit({
+  windowMs: limits.rateLimit.windowMs,
+  max: limits.rateLimit.maxAiRequests,
+  standardHeaders: true,
+  legacyHeaders: false,
+  statusCode: 429,
+  message: {
+    error: {
+      code: "AI_RATE_LIMIT_EXCEEDED",
+      message: "AI tutor question limit reached for now. Please wait a moment before sending another question."
+    }
+  }
+});
+
 export default {
   standardRateLimiter,
-  aiRateLimiter
+  aiRateLimiter,
+  tutorRateLimiter
 };
