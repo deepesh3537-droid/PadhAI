@@ -103,6 +103,17 @@ Status values: **Accepted** · **Proposed** · **Open** · **Superseded**
 4. *Simplicity and testability:* Plain functions are transparent to inspect, produce standard call stacks, and are straightforwardly verified with native `node:test` suites without framework mocking.
 **Consequence:** Consistent with ADR-007 ("Plain functions first"). If future phases introduce complex, non-deterministic multi-agent dialogue loops that demonstrably exceed plain function maintainability, graph orchestration may be re-evaluated.
 
+## ADR-020 — Syllabus Upload Formats, Size Limits, and Extraction Architecture
+**Status:** Accepted
+**Decision:**
+1. *Permitted Formats:* `.pdf` (`application/pdf`), `.txt` (`text/plain`), and `.md` (`text/markdown`).
+2. *Maximum File Size:* 5 MB (`5 * 1024 * 1024` bytes).
+3. *Character Extraction Budget:* Maximum 50,000 characters (~10,000 tokens / 20+ pages).
+4. *In-Memory Parsing & Storage Isolation:* Files are received into memory buffers (`multer.memoryStorage()`) without writing untrusted user filenames to disk. Ephemeral buffers are parsed in-memory and immediately discarded.
+5. *Explicit Handling of Unreadable Files:* Files yielding fewer than 50 printable characters (e.g., scanned/image-only PDFs, password-protected, or corrupted files) trigger an immediate, friendly `UNREADABLE_SYLLABUS` error instructing the user to upload a text-based document or paste text. The system **never** invents or hallucinates missing topics.
+6. *Structural Preservation & Ambiguity Flagging:* Extracted headings (Units, Modules, Weeks, Topics) are parsed into structural modules/lessons. Ambiguous or missing objectives are flagged as `ambiguities` rather than filled with AI-invented subjects.
+**Reason:** Universally covers university and course syllabi while strictly enforcing security isolation (SECURITY §9), zero file-system clutter, and zero DoS risk on an 8 GB RAM environment.
+
 ---
 
 ## Open decisions (no ADR yet — do not invent answers)
@@ -113,7 +124,6 @@ Status values: **Accepted** · **Proposed** · **Open** · **Superseded**
 | GPU model / VRAM | `docs/model-benchmarks.md` |
 | Online inference approach under ₹0 | New ADR |
 | Hosting for API + worker | New ADR |
-| Syllabus formats + max file size | New ADR |
 | Source-quality measurement | New ADR |
 | Privacy, retention, account deletion | New ADR + `SECURITY.md` |
 | Target number of prototype users | New ADR |
