@@ -27,6 +27,13 @@ export const limits = {
     maxPages: 20,
     maxDocBytes: 500000,
     jobTimeoutMs: 600000
+  },
+  syllabus: {
+    maxFileSizeBytes: 5 * 1024 * 1024, // 5 MB (ADR-020)
+    allowedExtensions: [".pdf", ".txt", ".md"],
+    allowedMimeTypes: ["application/pdf", "text/plain", "text/markdown"],
+    maxExtractedChars: 50000,
+    minExtractedChars: 50
   }
 };
 
