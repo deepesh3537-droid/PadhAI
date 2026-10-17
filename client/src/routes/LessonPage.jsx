@@ -249,6 +249,36 @@ export function LessonPage({ course, initialLessonId, onBackToCourse, onSelectLe
               </div>
             )}
 
+            {/* Honest Coverage Notice if gaps exist (TASK-071, PRD §6 F2) */}
+            {(() => {
+              const gaps = currentLesson.metadata?.coverageGaps || researchJob?.progress?.lessonCoverage?.[currentLesson.id]?.gaps || [];
+              if (!gaps || gaps.length === 0) return null;
+              return (
+                <div style={{ padding: "14px 18px", backgroundColor: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "var(--radius-btn)", marginBottom: "24px", fontSize: "13px", color: "#92400E" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", fontWeight: 600, marginBottom: "4px" }}>
+                    <span>⚠️ Honest Coverage Notice</span>
+                    <span className="badge" style={{ backgroundColor: "#FEF3C7", color: "#B45309", fontSize: "11px" }}>
+                      {gaps.length} gap{gaps.length > 1 ? "s" : ""} flagged
+                    </span>
+                  </div>
+                  <p style={{ margin: "4px 0 8px 0", lineHeight: "1.5" }}>
+                    Free web tutorials could not be fully verified for the following objective{gaps.length > 1 ? "s" : ""}:
+                  </p>
+                  <ul style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "4px" }}>
+                    {gaps.map((gap, idx) => (
+                      <li key={idx}>
+                        <strong>{typeof gap === "string" ? gap : gap.objective}</strong>
+                        {gap.reason && <span style={{ opacity: 0.85, fontSize: "12px" }}> — {gap.reason}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                  <div style={{ marginTop: "10px", fontSize: "12px", color: "#B45309" }}>
+                    💡 <em>Use the AI Tutor in the side panel for interactive explanation on these objectives.</em>
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* TASK-045, TASK-048, TASK-049: Recommended Resources Section */}
             <section style={{ marginBottom: "28px", paddingTop: "20px", borderTop: "1px solid var(--color-border)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "8px" }}>

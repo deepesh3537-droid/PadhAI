@@ -1,6 +1,8 @@
 import { discoverResourcesForLesson } from "./pipeline.js";
+import { evaluateLessonCoverage } from "./coverage.js";
 import { updateResearchJob } from "../db/repositories/researchJob.repository.js";
-import { findCourseByIdAndUser } from "../db/repositories/course.repository.js";
+import { findCourseByIdAndUser, updateLessonMetadata } from "../db/repositories/course.repository.js";
+import { upsertResource, linkLessonResource } from "../db/repositories/resource.repository.js";
 import { limits } from "../config/limits.js";
 
 /**
@@ -66,6 +68,7 @@ export async function processResearchJob({ jobId, courseId, userId, token }) {
           allLessons.push({
             id: les.id,
             title: les.title,
+            objectives: les.objectives || [],
             moduleTitle: mod.title
           });
         });
@@ -76,6 +79,8 @@ export async function processResearchJob({ jobId, courseId, userId, token }) {
     let processedLessons = 0;
     let discoveredCount = 0;
     let verifiedCount = 0;
+    let totalGapsCount = 0;
+    const lessonCoverageMap = {};
 
     await updateResearchJob(jobId, {
       current_step: "discovering_resources",
@@ -83,7 +88,9 @@ export async function processResearchJob({ jobId, courseId, userId, token }) {
         totalLessons,
         processedLessons,
         discoveredCount,
-        verifiedCount
+        verifiedCount,
+        totalGapsCount,
+        lessonCoverage: {}
       }
     }, token);
 
@@ -95,6 +102,7 @@ export async function processResearchJob({ jobId, courseId, userId, token }) {
 
       const batchPromises = batch.map(async (lesson) => {
         try {
+          // Bounded step 1: Discover resources (video + text via SearXNG)
           const found = await Promise.race([
             discoverResourcesForLesson({
               lessonId: lesson.id,
@@ -110,6 +118,66 @@ export async function processResearchJob({ jobId, courseId, userId, token }) {
             discoveredCount += found.length;
             verifiedCount += found.filter((r) => r.verification_status === "verified").length;
           }
+
+          // Bounded step 2: Evaluate curriculum coverage & limited follow-up search (TASK-071)
+          const coverage = await evaluateLessonCoverage({
+            lessonTitle: lesson.title,
+            objectives: lesson.objectives || [],
+            existingResources: found || [],
+            courseTopic: course.title
+          });
+
+          // Bounded step 3: Persist newly found follow-up resources if any
+          if (coverage.newDiscoveredResources?.length > 0) {
+            for (const item of coverage.newDiscoveredResources) {
+              try {
+                const savedRes = await upsertResource({
+                  url: item.url,
+                  title: item.title,
+                  resource_type: item.type || "article",
+                  access_status: "accessible",
+                  relevance_evidence: {
+                    score: item.relevanceScore || 0.8,
+                    matchedKeywords: ["follow_up_coverage"],
+                    wrappedSummary: item.summary || ""
+                  },
+                  verification_status: "verified"
+                }, token);
+
+                await linkLessonResource({
+                  lessonId: lesson.id,
+                  resourceId: savedRes.id,
+                  rank: 2,
+                  note: `Discovered during coverage follow-up for ${lesson.title}`
+                }, token);
+
+                discoveredCount++;
+                verifiedCount++;
+              } catch (resErr) {
+                console.warn(`[ResearchWorker] Follow-up resource persist failed:`, resErr.message);
+              }
+            }
+          }
+
+          // Step 4: Honestly record gaps and update lesson metadata
+          lessonCoverageMap[lesson.id] = {
+            totalObjectives: coverage.totalObjectives,
+            coveredCount: coverage.coveredCount,
+            coveragePercentage: coverage.coveragePercentage,
+            gaps: coverage.gaps,
+            coveredObjectives: coverage.coveredObjectives,
+            isFullyCovered: coverage.isFullyCovered
+          };
+
+          if (coverage.gaps?.length > 0) {
+            totalGapsCount += coverage.gaps.length;
+          }
+
+          await updateLessonMetadata(lesson.id, {
+            coverageGaps: coverage.gaps,
+            coveragePercentage: coverage.coveragePercentage
+          }, token).catch(() => null);
+
         } catch (err) {
           console.warn(`[ResearchWorker] Lesson ${lesson.id} research skipped/failed:`, err.message);
         } finally {
@@ -126,7 +194,9 @@ export async function processResearchJob({ jobId, courseId, userId, token }) {
           totalLessons,
           processedLessons,
           discoveredCount,
-          verifiedCount
+          verifiedCount,
+          totalGapsCount,
+          lessonCoverage: lessonCoverageMap
         }
       }, token);
     }
@@ -139,12 +209,14 @@ export async function processResearchJob({ jobId, courseId, userId, token }) {
         totalLessons,
         processedLessons,
         discoveredCount,
-        verifiedCount
+        verifiedCount,
+        totalGapsCount,
+        lessonCoverage: lessonCoverageMap
       },
       safe_error: null
     }, token);
 
-    console.log(`[ResearchWorker] Job ${jobId} completed successfully. Discovered: ${discoveredCount}, Verified: ${verifiedCount}`);
+    console.log(`[ResearchWorker] Job ${jobId} completed successfully. Discovered: ${discoveredCount}, Verified: ${verifiedCount}, Gaps: ${totalGapsCount}`);
     return finalJob;
   } catch (err) {
     console.error(`[ResearchWorker] Job ${jobId} failed:`, err);

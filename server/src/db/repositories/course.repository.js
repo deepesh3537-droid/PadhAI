@@ -117,7 +117,8 @@ export async function findCourseByIdAndUser(courseId, userId, token) {
           title,
           summary,
           objectives,
-          position
+          position,
+          metadata
         )
       )
     `)
@@ -142,8 +143,36 @@ export async function findCourseByIdAndUser(courseId, userId, token) {
   return data;
 }
 
+/**
+ * Updates a lesson's metadata (e.g., coverage gaps or evaluation results).
+ *
+ * @param {string} lessonId
+ * @param {object} metadata
+ * @param {string} [token]
+ * @returns {Promise<object>}
+ */
+export async function updateLessonMetadata(lessonId, metadata, token) {
+  const { getSupabaseClient, supabaseServer } = await import("../supabaseAdmin.js");
+  const client = token ? getSupabaseClient(token) : supabaseServer;
+
+  const { data, error } = await client
+    .from("lessons")
+    .update({ metadata })
+    .eq("id", lessonId)
+    .select()
+    .single();
+
+  if (error) {
+    console.warn(`[CourseRepository] Failed to update lesson metadata for ${lessonId}:`, error.message);
+    return null;
+  }
+
+  return data;
+}
+
 export default {
   createCourseWithCurriculum,
   findCoursesByUserId,
-  findCourseByIdAndUser
+  findCourseByIdAndUser,
+  updateLessonMetadata
 };

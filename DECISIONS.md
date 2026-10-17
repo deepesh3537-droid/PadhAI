@@ -93,6 +93,16 @@ Status values: **Accepted** · **Proposed** · **Open** · **Superseded**
 **Reason:** SearXNG is open-source (GPL-3.0), privacy-respecting, has no API key requirements or paid subscription fees (strictly aligns with ₹0 target ADR-006), returns clean JSON output via the `/search?format=json` endpoint, and aggregates multiple search engines (Google, Bing, DuckDuckGo, Wikipedia, arXiv, etc.).
 **Consequence:** The application configures `SEARXNG_URL` in `.env` (defaulting to `http://localhost:8080` or a public fallback instance). The provider gracefully handles timeouts or unreachable instances without failing the entire course generation pipeline.
 
+## ADR-019 — Research Orchestration with Plain Functions, Not LangGraph.js
+**Status:** Accepted
+**Decision:** Retain plain, modular asynchronous JavaScript functions (`pipeline.js`, `worker.js`, `coverage.js`, `stateMachine.js`) backed by durable PostgreSQL state transitions (`research_jobs` table) instead of adopting LangGraph.js or LangChain.js.
+**Reason:**
+1. *Deterministic, bounded pipeline:* The educational research workflow is an acyclic, bounded sequence of deterministic steps (curriculum lessons → primary video resolution → SearXNG search → SSRF safe-link checks → lexical relevance filtering → coverage analysis with bounded 1 follow-up search → honest gap recording → DB persistence). It has no multi-turn cycles or open-ended multi-agent graph topologies that justify dynamic graph orchestration.
+2. *Durability and crash recovery without graph frameworks:* Durability, recovery from server restarts, and atomic progress transitions are directly managed by PostgreSQL via `research_jobs` (`status IN ('queued', 'researching', 'completed', 'failed')`) and `reclaimAbandonedResearchJobs()`. LangGraph's checkpointer abstractions add redundant indirection on top of PostgreSQL without functional benefit.
+3. *Strict ₹0 budget and 8 GB RAM target:* LangGraph.js and its dependencies (`@langchain/core`, state runners) introduce considerable bundle weight and runtime memory overhead on local commodity hardware running an Ollama model.
+4. *Simplicity and testability:* Plain functions are transparent to inspect, produce standard call stacks, and are straightforwardly verified with native `node:test` suites without framework mocking.
+**Consequence:** Consistent with ADR-007 ("Plain functions first"). If future phases introduce complex, non-deterministic multi-agent dialogue loops that demonstrably exceed plain function maintainability, graph orchestration may be re-evaluated.
+
 ---
 
 ## Open decisions (no ADR yet — do not invent answers)

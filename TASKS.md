@@ -125,15 +125,15 @@
 
 ## Phase 8 — Research orchestration
 
-- [ ] **TASK-067** Migration for `research_jobs`.
-- [ ] **TASK-068** `POST /api/courses/:id/research` and `GET /api/jobs/:id`.
-- [ ] **TASK-069** `research/pipeline.js` as plain functions with bounded steps.
-- [ ] **TASK-070** `research/worker.js`; persisted status transitions.
-- [ ] **TASK-071** Coverage check + limited follow-up searches; mark gaps honestly.
-- [ ] **TASK-072** Bounded retries and recovery of interrupted jobs.
-- [ ] **TASK-073** Prompt-injection tests with hostile page content.
-- [ ] **TASK-074** Evaluate whether LangGraph.js is justified → ADR either way.
-- [ ] **TASK-075** Run TEST_PLAN §9.
+- [x] **TASK-067** Migration for `research_jobs`.
+- [x] **TASK-068** `POST /api/courses/:id/research` and `GET /api/jobs/:id`.
+- [x] **TASK-069** `research/pipeline.js` as plain functions with bounded steps.
+- [x] **TASK-070** `research/worker.js`; persisted status transitions.
+- [x] **TASK-071** Coverage check + limited follow-up searches; mark gaps honestly.
+- [x] **TASK-072** Bounded retries and recovery of interrupted jobs.
+- [x] **TASK-073** Prompt-injection tests with hostile page content.
+- [x] **TASK-074** Evaluate whether LangGraph.js is justified → ADR either way.
+- [x] **TASK-075** Run TEST_PLAN §9.
 
 ---
 

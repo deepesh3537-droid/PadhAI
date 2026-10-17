@@ -98,6 +98,18 @@ Prerequisites verified (Node.js v24.13.1, npm 11.8.0, Git 2.56.0). Root structur
 
 ## Environment Facts
 
+- [x] **TASK-067**: Migration for `research_jobs` (`db/migrations/005_research_jobs.sql`) with RLS and partial unique active job index.
+- [x] **TASK-068**: `POST /api/courses/:id/research` and `GET /api/jobs/:id` plus `POST /api/jobs/:id/retry` owner-scoped endpoints.
+- [x] **TASK-069**: `research/pipeline.js` as plain functions with bounded steps (SearXNG search, deduplication, SSRF checks, video guarantee).
+- [x] **TASK-070**: `research/worker.js` with validated persisted status transitions (`stateMachine.js`).
+- [x] **TASK-071**: `research/coverage.js` checking curriculum objectives with bounded follow-up searches and honest gap recording in DB and `LessonPage.jsx`.
+- [x] **TASK-072**: Bounded retries (max 3) and automatic recovery of interrupted jobs on startup via `reclaimAbandonedResearchJobs()`.
+- [x] **TASK-073**: Prompt-injection hardening (`defangHostileText`, `wrapUntrustedText`) with 9 hostile test vectors in `server/tests/research/promptInjection.test.js`.
+- [x] **TASK-074**: Evaluated LangGraph.js vs plain functions; documented ADR-019 confirming plain functions with PostgreSQL state transitions.
+- [x] **TASK-075**: Full TEST_PLAN §9 automated test suite (`server/tests/research/jobs.test.js`, 81 passing tests across all 9 suites).
+
+## Current Stack
+
 | Item | Value |
 |---|---|
 | OS | Windows 11 Home Single Language (64-bit, Build 10.0.26200) |
@@ -112,6 +124,7 @@ Prerequisites verified (Node.js v24.13.1, npm 11.8.0, Git 2.56.0). Root structur
 | Database/Auth | Supabase (`https://xhargblmtxlwksrypmzb.supabase.co`) |
 | Model | `qwen3:0.6b` — **Accepted** (ADR-004) |
 | Search provider | SearXNG — **Accepted** (ADR-018) |
+| Orchestration | Plain async functions + PostgreSQL jobs table — **Accepted** (ADR-019) |
 | Hosting | Not chosen (Phase 10) |
 
 ## Known Issues
@@ -124,16 +137,13 @@ See the open-decisions table in `DECISIONS.md`.
 
 ## Next Step
 
-Proceed to **Phase 8 — Research orchestration**:
-1. **TASK-067**: Migration for `research_jobs`.
-2. **TASK-068**: `POST /api/courses/:id/research` and `GET /api/jobs/:id`.
-3. **TASK-069**: `research/pipeline.js` as plain functions with bounded steps.
-4. **TASK-070**: `research/worker.js`; persisted status transitions.
-5. **TASK-071**: Coverage check + limited follow-up searches; mark gaps honestly.
-6. **TASK-072**: Bounded retries and recovery of interrupted jobs.
-7. **TASK-073**: Prompt-injection tests with hostile page content.
-8. **TASK-074**: Evaluate whether LangGraph.js is justified → ADR either way.
-9. **TASK-075**: Run TEST_PLAN §9.
+Proceed to **Phase 9 — Syllabus upload**:
+1. **TASK-076**: Decide formats and max size → ADR.
+2. **TASK-077**: Upload endpoint with validation (SECURITY §9).
+3. **TASK-078**: Text extraction; explicit handling of unreadable files.
+4. **TASK-079**: Preserve syllabus structure; flag ambiguities; never invent topics.
+5. **TASK-080**: Generate a course from the extracted syllabus.
+6. **TASK-081**: Run TEST_PLAN §10.
 
 ## Session Log
 
@@ -147,5 +157,7 @@ Proceed to **Phase 8 — Research orchestration**:
 | 2026-10-17 | Completed Phase 4 (TASK-039 through TASK-046): ADR-018 SearXNG, Migration 004, URL normalization, SSRF protection, relevance filtering, untrusted text wrapper, resource repository & API, LessonPage UI with metadata, and 35 automated tests. |
 | 2026-10-17 | Completed Phase 5 (TASK-047 through TASK-051): `VideoEmbed.jsx`, `FallbackLinkCard.jsx`, PDF indicators, overall lesson progress percentage, and mobile responsive layout passes at 375px/768px/1440px. |
 | 2026-10-17 | Completed Phase 6 (TASK-052 through TASK-058): Migration 006 for quizzes & attempts, `quiz.schema.js` with answer key bounds check, `quiz.prompt.js`, safe retrieval endpoint `GET /api/lessons/:id/quiz`, deterministic scoring engine `quiz.service.js`, `POST /api/quizzes/:id/attempts`, interactive `QuizRunner.jsx`, `FeedbackPanel.jsx`, `AttemptHistory.jsx`, and 52 passing tests. |
+| 2026-10-18 | Completed Phase 8 (TASK-067 through TASK-075): Migration 005 for durable research jobs with RLS; `POST /courses/:id/research`, `GET /jobs/:id`, `POST /jobs/:id/retry`; plain function pipeline & worker with concurrency cap; state machine status transition validation; curriculum coverage evaluator with bounded follow-up searches and honest gap recording; server startup reclamation of interrupted jobs; prompt injection hardening with 9 hostile test vectors; ADR-019 documenting evaluation of LangGraph.js; and TEST_PLAN §9 automated test suite (81 passing tests across 9 suites). |
+
 
 

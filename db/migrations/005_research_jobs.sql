@@ -60,5 +60,5 @@ CREATE POLICY "Users can update own research jobs"
   );
 
 -- 6. Explicit Table Grants (ADR-017 / Supabase Auth PostgREST access)
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.research_jobs TO authenticated;
-GRANT ALL PRIVILEGES ON public.research_jobs TO service_role;
+GRANT ALL ON TABLE public.research_jobs TO authenticated, anon, service_role;
+
