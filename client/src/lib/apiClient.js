@@ -10,8 +10,10 @@ export async function apiRequest(endpoint, options = {}) {
   const { session } = (await supabase.auth.getSession()).data || {};
   const token = session?.access_token;
 
+  const isFormData = options.body instanceof FormData;
+
   const headers = {
-    "Content-Type": "application/json",
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...(options.headers || {})
   };
@@ -39,7 +41,15 @@ export async function apiRequest(endpoint, options = {}) {
 
 export const api = {
   get: (endpoint, options) => apiRequest(endpoint, { method: "GET", ...options }),
-  post: (endpoint, body, options) => apiRequest(endpoint, { method: "POST", body: JSON.stringify(body), ...options }),
+  post: (endpoint, body, options) => {
+    const isFormData = body instanceof FormData;
+    return apiRequest(endpoint, {
+      method: "POST",
+      body: isFormData ? body : JSON.stringify(body),
+      ...options
+    });
+  },
+  upload: (endpoint, formData, options) => apiRequest(endpoint, { method: "POST", body: formData, ...options }),
   put: (endpoint, body, options) => apiRequest(endpoint, { method: "PUT", body: JSON.stringify(body), ...options }),
   delete: (endpoint, options) => apiRequest(endpoint, { method: "DELETE", ...options })
 };

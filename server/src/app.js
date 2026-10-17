@@ -8,6 +8,7 @@ import { lessonsRouter } from "./routes/lessons.routes.js";
 import { quizzesRouter } from "./routes/quizzes.routes.js";
 import { tutorRouter } from "./routes/tutor.routes.js";
 import { jobsRouter } from "./routes/jobs.routes.js";
+import { syllabusRouter } from "./routes/syllabus.routes.js";
 import { requireAuth } from "./middleware/auth.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { NotFoundError } from "./utils/errors.js";
@@ -41,6 +42,9 @@ app.use("/api", tutorRouter);
 
 // Research Jobs API Routes (TASK-068)
 app.use("/api", jobsRouter);
+
+// Syllabus API Routes (TASK-077, TASK-080)
+app.use("/api", syllabusRouter);
 
 // Protected User Route (TASK-020)
 app.get("/api/me", requireAuth, (req, res) => {

@@ -112,6 +112,17 @@ Prerequisites verified (Node.js v24.13.1, npm 11.8.0, Git 2.56.0). Root structur
 
 | Item | Value |
 |---|---|
+- [x] **TASK-076**: Decide formats and max size → documented in ADR-020 (PDF, TXT, MD; 5 MB max; 50k char budget; in-memory buffer processing).
+- [x] **TASK-077**: Upload endpoint with validation (`POST /api/syllabus/extract` with filename sanitization, size checks, and allowlists).
+- [x] **TASK-078**: Text extraction from PDF, TXT, MD; explicit error handling for scanned/unreadable files (never inventing topics).
+- [x] **TASK-079**: Syllabus structural parsing preserving units/modules/topics and flagging ambiguities.
+- [x] **TASK-080**: Course generation from syllabus (`POST /api/syllabus/generate`) and client UI integration in `NewCoursePage.jsx`.
+- [x] **TASK-081**: Full TEST_PLAN §10 automated test suite (`server/tests/routes/syllabus.test.js`, 90 passing tests across 9 suites).
+
+## Current Stack
+
+| Item | Value |
+|---|---|
 | OS | Windows 11 Home Single Language (64-bit, Build 10.0.26200) |
 | Node.js / npm | v24.13.1 / 11.8.0 |
 | Git | 2.56.0.windows.1 |
@@ -125,6 +136,7 @@ Prerequisites verified (Node.js v24.13.1, npm 11.8.0, Git 2.56.0). Root structur
 | Model | `qwen3:0.6b` — **Accepted** (ADR-004) |
 | Search provider | SearXNG — **Accepted** (ADR-018) |
 | Orchestration | Plain async functions + PostgreSQL jobs table — **Accepted** (ADR-019) |
+| Syllabus Parsing | Multer memory storage + pdf-parse (PDF/TXT/MD, max 5MB) — **Accepted** (ADR-020) |
 | Hosting | Not chosen (Phase 10) |
 
 ## Known Issues
@@ -137,13 +149,13 @@ See the open-decisions table in `DECISIONS.md`.
 
 ## Next Step
 
-Proceed to **Phase 9 — Syllabus upload**:
-1. **TASK-076**: Decide formats and max size → ADR.
-2. **TASK-077**: Upload endpoint with validation (SECURITY §9).
-3. **TASK-078**: Text extraction; explicit handling of unreadable files.
-4. **TASK-079**: Preserve syllabus structure; flag ambiguities; never invent topics.
-5. **TASK-080**: Generate a course from the extracted syllabus.
-6. **TASK-081**: Run TEST_PLAN §10.
+Proceed to **Phase 10 — Deployment and validation**:
+1. **TASK-082**: Re-verify free-tier limits for every chosen host/provider.
+2. **TASK-083**: Decide online inference under ₹0 (or document the limit) → ADR.
+3. **TASK-084**: Deploy to infrastructure that supports API + worker.
+4. **TASK-085**: Complete the SECURITY §12 checklist.
+5. **TASK-086**: Run TEST_PLAN §14 from another device and account.
+6. **TASK-087**: Document real limitations in README.
 
 ## Session Log
 
@@ -158,6 +170,7 @@ Proceed to **Phase 9 — Syllabus upload**:
 | 2026-10-17 | Completed Phase 5 (TASK-047 through TASK-051): `VideoEmbed.jsx`, `FallbackLinkCard.jsx`, PDF indicators, overall lesson progress percentage, and mobile responsive layout passes at 375px/768px/1440px. |
 | 2026-10-17 | Completed Phase 6 (TASK-052 through TASK-058): Migration 006 for quizzes & attempts, `quiz.schema.js` with answer key bounds check, `quiz.prompt.js`, safe retrieval endpoint `GET /api/lessons/:id/quiz`, deterministic scoring engine `quiz.service.js`, `POST /api/quizzes/:id/attempts`, interactive `QuizRunner.jsx`, `FeedbackPanel.jsx`, `AttemptHistory.jsx`, and 52 passing tests. |
 | 2026-10-18 | Completed Phase 8 (TASK-067 through TASK-075): Migration 005 for durable research jobs with RLS; `POST /courses/:id/research`, `GET /jobs/:id`, `POST /jobs/:id/retry`; plain function pipeline & worker with concurrency cap; state machine status transition validation; curriculum coverage evaluator with bounded follow-up searches and honest gap recording; server startup reclamation of interrupted jobs; prompt injection hardening with 9 hostile test vectors; ADR-019 documenting evaluation of LangGraph.js; and TEST_PLAN §9 automated test suite (81 passing tests across 9 suites). |
+| 2026-10-18 | Completed Phase 9 (TASK-076 through TASK-081): ADR-020 for syllabus upload formats, size bounds, and extraction architecture; `POST /api/syllabus/extract`, `POST /api/syllabus/parse`, and `POST /api/syllabus/generate` endpoints with path-traversal sanitization and in-memory parsing; explicit error handling for scanned/unreadable/corrupted files (never inventing topics); structural parsing preserving modules/topics with ambiguity detection; course generation from syllabus integrated into `NewCoursePage.jsx` UI (upload/paste tabs, extraction preview, ambiguity banners); and full TEST_PLAN §10 automated test suite (90 passing tests across 9 suites). |
 
 
 

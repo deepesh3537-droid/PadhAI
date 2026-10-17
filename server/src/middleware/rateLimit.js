@@ -50,8 +50,26 @@ export const tutorRateLimiter = rateLimit({
   }
 });
 
+/**
+ * Rate limiter for syllabus upload and extraction endpoints (TEST_PLAN §11).
+ */
+export const syllabusRateLimiter = rateLimit({
+  windowMs: limits.rateLimit.windowMs,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  statusCode: 429,
+  message: {
+    error: {
+      code: "RATE_LIMIT_EXCEEDED",
+      message: "Syllabus upload limit reached. Please wait a moment before uploading another document."
+    }
+  }
+});
+
 export default {
   standardRateLimiter,
   aiRateLimiter,
-  tutorRateLimiter
+  tutorRateLimiter,
+  syllabusRateLimiter
 };

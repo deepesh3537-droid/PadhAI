@@ -139,12 +139,12 @@
 
 ## Phase 9 — Syllabus upload
 
-- [ ] **TASK-076** Decide formats and max size → ADR.
-- [ ] **TASK-077** Upload endpoint with validation (SECURITY §9).
-- [ ] **TASK-078** Text extraction; explicit handling of unreadable files.
-- [ ] **TASK-079** Preserve syllabus structure; flag ambiguities; never invent topics.
-- [ ] **TASK-080** Generate a course from the extracted syllabus.
-- [ ] **TASK-081** Run TEST_PLAN §10.
+- [x] **TASK-076** Decide formats and max size → ADR.
+- [x] **TASK-077** Upload endpoint with validation (SECURITY §9).
+- [x] **TASK-078** Text extraction; explicit handling of unreadable files.
+- [x] **TASK-079** Preserve syllabus structure; flag ambiguities; never invent topics.
+- [x] **TASK-080** Generate a course from the extracted syllabus.
+- [x] **TASK-081** Run TEST_PLAN §10.
 
 ---
 
