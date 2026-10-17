@@ -76,10 +76,17 @@ Prerequisites verified (Node.js v24.13.1, npm 11.8.0, Git 2.56.0). Root structur
 - [x] **TASK-049**: PDF viewing indicators and link-out support in `FallbackLinkCard.jsx`.
 - [x] **TASK-050**: Lesson progress percentage and completed checks in `LessonPage.jsx`.
 - [x] **TASK-051**: Responsive media queries for 375px / 768px / 1440px with touch target sizing and accessibility focus rings.
+- [x] **TASK-052**: Migration `006_quizzes.sql` for `quizzes` and `quiz_attempts` with indexes, RLS, and authenticated table grants.
+- [x] **TASK-053**: Quiz schema `quiz.schema.js` with answer-key index validation (`correct_index < options.length`) and safe client payload sanitization (`sanitizeQuizForClient`).
+- [x] **TASK-054**: Quiz prompt builder & repair prompt builder in `quiz.prompt.js` with structured generation and bounded repair retries.
+- [x] **TASK-055**: Endpoints `GET /api/lessons/:id/quiz` (answer keys and explanations securely stripped) and `POST /api/quizzes/:id/attempts` in `quizzes.routes.js`.
+- [x] **TASK-056**: Deterministic scoring engine in `quiz.service.js` with unit tests covering 100%, 0%, partial, and unanswered submissions.
+- [x] **TASK-057**: Interactive Quiz UI with `QuizRunner.jsx`, accessible `QuestionCard.jsx`, `FeedbackPanel.jsx` (per-question correctness and explanations), and `AttemptHistory.jsx`.
+- [x] **TASK-058**: Automated TEST_PLAN §6 test suite passing (52 passing tests across server test suite, zero client build regressions).
 
 ## Current Task
 
-**Phase 5 Completed**. Next up: **Phase 6 — Quizzes** (`TASK-052` through `TASK-058`).
+**Phase 6 Completed**. Next up: **Phase 7 — Learner profile, mastery, tutor** (`TASK-059` through `TASK-066`).
 
 ## Environment Facts
 
@@ -109,14 +116,15 @@ See the open-decisions table in `DECISIONS.md`.
 
 ## Next Step
 
-Proceed to **Phase 6 — Quizzes**:
-1. **TASK-052**: Migrations for `quizzes` and `quiz_attempts` + RLS policies and table grants.
-2. **TASK-053**: Quiz schema (`quiz.schema.js`) with answer-key validation.
-3. **TASK-054**: Quiz prompt builder & generation with repair prompt.
-4. **TASK-055**: Endpoints `GET /api/lessons/:id/quiz` (answer keys stripped) and `POST /api/quizzes/:id/attempts`.
-5. **TASK-056**: Deterministic scoring service in `quiz.service.js` with unit tests.
-6. **TASK-057**: Quiz UI, feedback panel, attempt history on lesson workspace.
-7. **TASK-058**: Run TEST_PLAN §6.
+Proceed to **Phase 7 — Learner profile, mastery, tutor**:
+1. **TASK-059**: Migration for `topic_mastery`.
+2. **TASK-060**: `mastery.service.js` (documented formula) with unit tests.
+3. **TASK-061**: Mastery UI with evidence count and uncertainty wording.
+4. **TASK-062**: Revision recommendations from evidence.
+5. **TASK-063**: SQL retrieval of lesson, outline, attempts, mastery for the tutor.
+6. **TASK-064**: `POST /api/tutor/messages` (course-first, labeled fallback, sources).
+7. **TASK-065**: Tutor panel UI.
+8. **TASK-066**: Run TEST_PLAN §7–8.
 
 ## Session Log
 
@@ -127,5 +135,6 @@ Proceed to **Phase 6 — Quizzes**:
 | 2026-10-17 | Resolved 'permission denied for table courses' via Option B (ADR-017): implemented user-scoped Supabase client forwarding JWTs to PostgREST to execute queries under `authenticated` role and evaluate RLS. |
 | 2026-10-17 | Completed Phase 4 (TASK-039 through TASK-046): ADR-018 SearXNG, Migration 004, URL normalization, SSRF protection, relevance filtering, untrusted text wrapper, resource repository & API, LessonPage UI with metadata, and 35 automated tests. |
 | 2026-10-17 | Completed Phase 5 (TASK-047 through TASK-051): `VideoEmbed.jsx`, `FallbackLinkCard.jsx`, PDF indicators, overall lesson progress percentage, and mobile responsive layout passes at 375px/768px/1440px. |
+| 2026-10-17 | Completed Phase 6 (TASK-052 through TASK-058): Migration 006 for quizzes & attempts, `quiz.schema.js` with answer key bounds check, `quiz.prompt.js`, safe retrieval endpoint `GET /api/lessons/:id/quiz`, deterministic scoring engine `quiz.service.js`, `POST /api/quizzes/:id/attempts`, interactive `QuizRunner.jsx`, `FeedbackPanel.jsx`, `AttemptHistory.jsx`, and 52 passing tests. |
 
 

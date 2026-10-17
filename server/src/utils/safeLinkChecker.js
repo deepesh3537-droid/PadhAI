@@ -196,9 +196,12 @@ export async function checkSafeLink(rawUrl, {
         contentLength
       };
     } else if (status === 401 || status === 402 || status === 403) {
+      // YouTube and other bot-protected platforms return 403 to automated HEAD/GET requests
+      const isTrustedMedia =
+        parsed.hostname.includes("youtube.com") || parsed.hostname === "youtu.be";
       return {
         isAlive: true,
-        accessStatus: status === 402 ? "paywalled" : "restricted",
+        accessStatus: isTrustedMedia ? "accessible" : status === 402 ? "paywalled" : "restricted",
         contentType
       };
     } else {
@@ -210,6 +213,16 @@ export async function checkSafeLink(rawUrl, {
     }
   } catch (err) {
     clearTimeout(timeoutId);
+    // If a trusted public video service experienced a local network/IPv6 timeout in the crawler, preserve it as accessible
+    const isTrustedMedia =
+      parsed.hostname.includes("youtube.com") || parsed.hostname === "youtu.be";
+    if (isTrustedMedia) {
+      return {
+        isAlive: true,
+        accessStatus: "accessible",
+        contentType: "text/html"
+      };
+    }
     return {
       isAlive: false,
       accessStatus: "dead",

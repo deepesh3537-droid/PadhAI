@@ -44,8 +44,28 @@ export function extractYouTubeId(url) {
 export function VideoEmbed({ url, title, author }) {
   const [hasError, setHasError] = useState(false);
   const videoId = extractYouTubeId(url);
+  const isSearchList = url && typeof url === "string" && url.includes("listType=search");
 
-  if (!videoId || hasError) {
+  // Determine valid embed source
+  const embedUrl = videoId
+    ? `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&enablejsapi=1`
+    : isSearchList
+    ? url
+    : null;
+
+  // Generate clean outbound watch link for external tab
+  let outboundWatchUrl = url;
+  if (isSearchList) {
+    try {
+      const parsed = new URL(url);
+      const query = parsed.searchParams.get("list") || title || "tutorial";
+      outboundWatchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+    } catch {
+      outboundWatchUrl = url;
+    }
+  }
+
+  if (!embedUrl || hasError) {
     return (
       <div
         className="card"
@@ -75,7 +95,7 @@ export function VideoEmbed({ url, title, author }) {
         </p>
         <div>
           <a
-            href={url}
+            href={outboundWatchUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-secondary"
@@ -87,8 +107,6 @@ export function VideoEmbed({ url, title, author }) {
       </div>
     );
   }
-
-  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&enablejsapi=1`;
 
   return (
     <div
@@ -114,7 +132,6 @@ export function VideoEmbed({ url, title, author }) {
           title={title || "YouTube video player"}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
-          onError={() => setHasError(true)}
           style={{
             position: "absolute",
             top: 0,

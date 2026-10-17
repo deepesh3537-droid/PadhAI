@@ -100,13 +100,13 @@
 
 ## Phase 6 — Quizzes
 
-- [ ] **TASK-052** Migrations for `quizzes` and `quiz_attempts` + RLS.
-- [ ] **TASK-053** Quiz schema with answer-key validation.
-- [ ] **TASK-054** Quiz prompt + generation; validate before saving.
-- [ ] **TASK-055** `GET /api/lessons/:id/quiz` (no keys) and `POST /api/quizzes/:id/attempts`.
-- [ ] **TASK-056** Deterministic scoring in `quiz.service.js` with unit tests.
-- [ ] **TASK-057** Quiz UI, feedback panel, attempt history.
-- [ ] **TASK-058** Run TEST_PLAN §6.
+- [x] **TASK-052** Migrations for `quizzes` and `quiz_attempts` + RLS.
+- [x] **TASK-053** Quiz schema with answer-key validation.
+- [x] **TASK-054** Quiz prompt + generation; validate before saving.
+- [x] **TASK-055** `GET /api/lessons/:id/quiz` (no keys) and `POST /api/quizzes/:id/attempts`.
+- [x] **TASK-056** Deterministic scoring in `quiz.service.js` with unit tests.
+- [x] **TASK-057** Quiz UI, feedback panel, attempt history.
+- [x] **TASK-058** Run TEST_PLAN §6.
 
 ---
 

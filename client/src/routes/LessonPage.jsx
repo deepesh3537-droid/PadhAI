@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { api } from "../lib/apiClient.js";
 import { VideoEmbed, extractYouTubeId } from "../components/ui/VideoEmbed.jsx";
 import { FallbackLinkCard } from "../components/ui/FallbackLinkCard.jsx";
+import { QuizRunner } from "../components/quiz/QuizRunner.jsx";
 
 export function LessonPage({ course, initialLessonId, onBackToCourse, onSelectLesson }) {
   // Flatten all lessons across modules to calculate order and prev/next
@@ -169,7 +170,9 @@ export function LessonPage({ course, initialLessonId, onBackToCourse, onSelectLe
 
   // Extract primary video resource if any
   const videoResource = resources.find((r) =>
-    r.resource_type === "video" || extractYouTubeId(r.url)
+    r.resource_type === "video" ||
+    extractYouTubeId(r.url) ||
+    (r.url && (r.url.includes("youtube.com") || r.url.includes("youtu.be")))
   );
 
   // Other non-video resources or all resources if no embeddable video
@@ -362,6 +365,12 @@ export function LessonPage({ course, initialLessonId, onBackToCourse, onSelectLe
                 </span>
               )}
             </div>
+
+            {/* TASK-057: Interactive Lesson Quiz */}
+            <QuizRunner
+              lessonId={currentLesson.id}
+              lessonTitle={currentLesson.title}
+            />
           </div>
 
           {/* Prev / Next Lesson Navigation (Boundary-aware) */}
